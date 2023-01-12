@@ -99,7 +99,7 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 
-	screen.Fill(g.Scene.ClearColor.ToRGBA64())
+	screen.Fill(g.Scene.World.ClearColor.ToRGBA64())
 
 	camera := g.Scene.Root.Get("Camera").(*tetra3d.Camera)
 
