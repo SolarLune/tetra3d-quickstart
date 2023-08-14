@@ -8,10 +8,10 @@
 		{
 			"extras":{
 				"t3dExportFormat__":2,
-				"t3dExportLights__":1,
-				"t3dExportCameras__":1,
-				"t3dExportOnSave__":1,
-				"t3dPackTextures__":1,
+				"t3dExportLights__":true,
+				"t3dExportCameras__":true,
+				"t3dExportOnSave__":true,
+				"t3dPackTextures__":true,
 				"t3dCameraResolution__":[
 					1920,
 					1080
