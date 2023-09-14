@@ -104,7 +104,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	camera := g.Scene.Root.Get("Camera").(*tetra3d.Camera)
 
 	camera.Clear()
-	camera.RenderNodes(g.Scene, g.Scene.Root)
+	camera.RenderScene(g.Scene)
 
 	if g.DrawDebugDepth {
 		screen.DrawImage(camera.DepthTexture(), nil)
