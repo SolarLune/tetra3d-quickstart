@@ -13,9 +13,9 @@ import (
 )
 
 type Game struct {
-	Width, Height  int
 	Library        *tetra3d.Library
 	Scene          *tetra3d.Scene
+	Camera         *tetra3d.Camera
 	DrawDebugDepth bool
 	DrawDebugStats bool
 }
@@ -30,10 +30,7 @@ var startingGLTF []byte
 
 func NewGame() *Game {
 
-	game := &Game{
-		Width:  796,
-		Height: 448,
-	}
+	game := &Game{}
 
 	game.Init()
 
@@ -44,10 +41,7 @@ func (g *Game) Init() {
 
 	if g.Library == nil {
 
-		options := tetra3d.DefaultGLTFLoadOptions()
-		options.CameraWidth = g.Width
-		options.CameraHeight = g.Height
-		library, err := tetra3d.LoadGLTFData(startingGLTF, options)
+		library, err := tetra3d.LoadGLTFData(startingGLTF, nil)
 		if err != nil {
 			panic(err)
 		}
@@ -57,6 +51,8 @@ func (g *Game) Init() {
 	}
 
 	g.Scene = g.Library.ExportedScene.Clone()
+
+	g.Camera = g.Scene.Root.Get("Camera").(*tetra3d.Camera)
 
 }
 
@@ -101,19 +97,17 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	screen.Fill(g.Scene.World.ClearColor.ToRGBA64())
 
-	camera := g.Scene.Root.Get("Camera").(*tetra3d.Camera)
-
-	camera.Clear()
-	camera.RenderScene(g.Scene)
+	g.Camera.Clear()
+	g.Camera.RenderScene(g.Scene)
 
 	if g.DrawDebugDepth {
-		screen.DrawImage(camera.DepthTexture(), nil)
+		screen.DrawImage(g.Camera.DepthTexture(), nil)
 	} else {
-		screen.DrawImage(camera.ColorTexture(), nil)
+		screen.DrawImage(g.Camera.ColorTexture(), nil)
 	}
 
 	if g.DrawDebugStats {
-		camera.DrawDebugRenderInfo(screen, 1, colors.White())
+		g.Camera.DrawDebugRenderInfo(screen, 1, colors.White())
 	}
 
 }
@@ -121,7 +115,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 func (g *Game) Layout(w, h int) (int, int) {
 	// This is a fixed aspect ratio; we can change this to, say, extend for wider displays by using the provided w argument and
 	// calculating the height from the aspect ratio, then calling Camera.Resize() on any / all cameras with the new width and height.
-	return g.Width, g.Height
+	return g.Camera.Size()
 }
 
 func main() {
